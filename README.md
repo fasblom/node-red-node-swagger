@@ -8,7 +8,7 @@ It is a fork of the https://github.com/node-red/node-red-node-swagger repo with 
 
 1. Install the node module
 
-2. Provide a template OpenAPI file in `settings.js`:
+2. If you want to provide a template OpenAPI file in `settings.js`:
 
         openapi: {
           template: {
