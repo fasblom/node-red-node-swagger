@@ -33,6 +33,6 @@
         "swagger-ui-dist": "^5.17.14"
     },
     "devDependencies": {
-        "eslint": "^8.56.0"
+        "eslint": "^ 9.5.0"
     }
 }
