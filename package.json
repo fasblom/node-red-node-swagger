@@ -1,6 +1,6 @@
 {
-    "name": "node-red-node-swagger",
-    "version": "0.2.0",
+    "name": "node-red-node-openapi",
+    "version": "0.0.2",
     "description": "A set of tools for generating OpenAPI3/Swagger documentation based on the HTTP nodes deployed in a flow",
     "license": "Apache",
     "repository": {
@@ -18,10 +18,14 @@
             "swagger": "swagger/swagger.js"
         }
     },
+    "conflicts": {
+        "node-red-node-swagger": "<0.3.0"
+    },
     "contributors": [
         "Nick O'Leary <nick.oleary@gmail.com>",
         "Cody Walker <cody@cody-walker.com>",
-        "Jon Silver <js@jfdi.info>"
+        "Jon Silver <js@jfdi.info>",
+        "Filip Åsblom <asblom@gmail.com>"
     ],
     "dependencies": {
         "i18next": "^23.7.20",
