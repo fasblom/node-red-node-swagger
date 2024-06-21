@@ -57,12 +57,12 @@ module.exports = function (RED) {
   RED.httpNode.get("/http-api/swagger.json", (req, res) => {
     const { httpNodeRoot, openapi: { template = {}, parameters: additionalParams = [] } = {} } = RED.settings;
 
-    console.log("httpNodeRoot:", httpNodeRoot);
-    console.log("OpenAPI Template:", template);
-    console.log("Additional Parameters:", additionalParams);
+    //console.log("httpNodeRoot:", httpNodeRoot);
+    //console.log("OpenAPI Template:", template);
+    //console.log("Additional Parameters:", additionalParams);
 
-    const settingsPath = RED.settings.get('settingsFile');
-    console.log("Settings file path:", settingsPath);
+    //const settingsPath = RED.settings.get('settingsFile');
+    //console.log("Settings file path:", settingsPath);
 
 
     const resp = { ...DEFAULT_TEMPLATE, ...template };
