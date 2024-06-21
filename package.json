@@ -1,32 +1,38 @@
 {
-    "name": "node-red-node-swagger",
-    "version": "0.1.9",
-    "description": "A set of tools for generating Swagger API documentation based on the HTTP nodes deployed in a flow",
+    "name": "@digital-tvilling/node-red-openapi-generator",
+    "version": "0.0.2",
+    "description": "A set of tools for generating OpenAPI3/Swagger documentation based on the HTTP nodes deployed in a flow. An updated version of the Node-RED Swagger Documentation Generator to support OpenAPI3.",
     "license": "Apache",
     "repository": {
         "type": "git",
-        "url": "https://github.com/node-red/node-red-node-swagger.git"
+        "url": "https://github.com/digital-tvilling/node-red-openapi-generator.git"
     },
     "keywords": [
         "node-red",
-        "swagger"
+        "swagger",
+        "open-api"
     ],
     "node-red": {
-        "version": ">=0.11.0",
+        "version": ">=3.0.0",
         "nodes": {
             "swagger": "swagger/swagger.js"
         }
     },
+    "conflicts": {
+        "node-red-node-swagger": "<0.3.0"
+    },
     "contributors": [
         "Nick O'Leary <nick.oleary@gmail.com>",
         "Cody Walker <cody@cody-walker.com>",
-        "Jon Silver <js@jfdi.info>"
+        "Jon Silver <js@jfdi.info>",
+        "Filip Åsblom <asblom@gmail.com>"
     ],
     "dependencies": {
-        "swagger-ui": "2.1.4",
-        "i18next-client": "1.11.4"
+        "i18next": "^23.7.20",
+        "swagger-ui": "^5.11.1",
+        "swagger-ui-dist": "^5.11.1"
     },
     "devDependencies": {
-        "eslint": "^6.4.0"
+        "eslint": "^8.56.0"
     }
 }
