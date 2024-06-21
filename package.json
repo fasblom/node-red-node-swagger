@@ -1,11 +1,11 @@
 {
-    "name": "node-red-node-openapi",
+    "name": "@digital-tvilling/node-red-openapi-generator",
     "version": "0.0.2",
-    "description": "A set of tools for generating OpenAPI3/Swagger documentation based on the HTTP nodes deployed in a flow",
+    "description": "A set of tools for generating OpenAPI3/Swagger documentation based on the HTTP nodes deployed in a flow. An updated version of the Node-RED Swagger Documentation Generator to support OpenAPI3.",
     "license": "Apache",
     "repository": {
         "type": "git",
-        "url": "https://github.com/node-red/node-red-node-swagger.git"
+        "url": "https://github.com/digital-tvilling/node-red-openapi-generator.git"
     },
     "keywords": [
         "node-red",
