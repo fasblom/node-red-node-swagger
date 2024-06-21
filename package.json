@@ -1,6 +1,6 @@
 {
     "name": "@digital-tvilling/node-red-openapi-generator",
-    "version": "0.0.2",
+    "version": "0.0.4",
     "description": "A set of tools for generating OpenAPI3/Swagger documentation based on the HTTP nodes deployed in a flow. An updated version of the Node-RED Swagger Documentation Generator to support OpenAPI3.",
     "license": "Apache",
     "repository": {
@@ -28,9 +28,9 @@
         "Filip Åsblom <asblom@gmail.com>"
     ],
     "dependencies": {
-        "i18next": "^23.7.20",
-        "swagger-ui": "^5.11.1",
-        "swagger-ui-dist": "^5.11.1"
+        "i18next": "^23.11.5",
+        "swagger-ui": "^5.17.14",
+        "swagger-ui-dist": "^5.17.14"
     },
     "devDependencies": {
         "eslint": "^8.56.0"

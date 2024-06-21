@@ -55,13 +55,17 @@ module.exports = function (RED) {
   const regexColons = /\/:\w*/g;
 
   RED.httpNode.get("/http-api/swagger.json", (req, res) => {
-    const {
-      httpNodeRoot,
-      swagger: {
-        parameters: additionalParams = [],
-        template: resp = { ...DEFAULT_TEMPLATE },
-      } = {},
-    } = RED.settings;
+    const { httpNodeRoot, openapi: { template = {}, parameters: additionalParams = [] } = {} } = RED.settings;
+
+    //console.log("httpNodeRoot:", httpNodeRoot);
+    //console.log("OpenAPI Template:", template);
+    //console.log("Additional Parameters:", additionalParams);
+
+    //const settingsPath = RED.settings.get('settingsFile');
+    //console.log("Settings file path:", settingsPath);
+
+
+    const resp = { ...DEFAULT_TEMPLATE, ...template };
     const { basePath = httpNodeRoot } = resp;
 
     resp.paths = {};
@@ -100,7 +104,6 @@ module.exports = function (RED) {
                 required: param.required,
                 schema: {
                   type: param.type,
-                  // Add other schema properties here
                 },
                 description: param.description,
               };

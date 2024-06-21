@@ -8,12 +8,6 @@ It is a fork of the https://github.com/node-red/node-red-node-swagger repo with 
 
 1. Install the node module
 
-        npm install node-red-node-openapi
-
-  **Note:** Until this is published to npm, you will need to install from git:
-  
-        npm install your-username/node-red-node-openapi
-
 2. Provide a template OpenAPI file in `settings.js`:
 
         openapi: {
