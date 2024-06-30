@@ -309,7 +309,7 @@
         class: "node-swagger-in-select",
         style: "max-width: 150px",
       }).appendTo(inSpan);
-      ["query", "header", "formData", "body"].forEach(function (opt) {
+      ["query", "header"].forEach(function (opt) {
         inSelect.append($("<option></option>").val(opt).text(opt));
       });
       inSelect.val(opts.in);
