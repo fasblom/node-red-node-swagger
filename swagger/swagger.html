@@ -62,25 +62,24 @@
           </div>
       </div>
       <div id="swagger-tab-requestBody">
-          <div class="form-row">
-              <label id="node-config-input-requestBody-label" for="node-config-input-requestBody" class="popover-right" data-i18n="[data-content]swagger.data-content.requestBody"><span data-i18n="swagger.label.requestBody"></span></label>
-              <input type="text" id="node-config-input-requestBody-description" style="width:100%;">
-          </div>
-          <div class="form-row">
-              <label id="node-config-input-requestBody-contentType-label" for="node-config-input-requestBody-contentType" class="popover-right" data-i18n="[data-content]swagger.data-content.mediaType"><span data-i18n="swagger.label.mediaType"></span></label>
-              <input type="text" id="node-config-input-requestBody-contentType" value="application/json" style="width: 100%;">
-          </div>
-          <div class="form-row">
-              <label><span data-i18n="swagger.label.required"></span></label>
-              <input type="checkbox" id="node-config-input-requestBody-required" style="width: auto; vertical-align: top;">
-          </div>
-          <div class="form-row">
-              <a href="#" class="red-ui-button red-ui-button-small" id="node-config-input-add-property"><i class="fa fa-plus"></i> <span data-i18n="swagger.label.property"></span></a>
-          </div>
-          <div id="node-config-requestBody-properties" style="box-sizing: border-box; border-radius: 5px; height: 310px; padding: 5px; border: 1px solid #ccc; overflow-y:scroll;">
-              <!-- Properties will be added here dynamically -->
-          </div>
-      </div>
+        <div class="form-row">
+            <label id="node-config-input-requestBody-label" for="node-config-input-requestBody" class="popover-right"><span>Request Body Description</span></label>
+            <input type="text" id="node-config-input-requestBody-description" style="width:100%;">
+        </div>
+        <div class="form-row">
+            <label><span>Required</span></label>
+            <input type="checkbox" id="node-config-input-requestBody-required" style="width: auto; vertical-align: top;">
+        </div>
+        <div class="form-row">
+            <label id="node-config-input-requestBody-contentType-label" for="node-config-input-requestBody-contentType" class="popover-right"><span>Content Type</span></label>
+            <input type="text" id="node-config-input-requestBody-contentType" value="application/json" style="width: 100%;">
+        </div>
+        <div class="form-row">
+            <label id="node-config-input-requestBody-json-label" for="node-config-input-requestBody-json" class="popover-right"><span>Request Body JSON Schema</span></label>
+            <textarea id="node-config-input-requestBody-json" style="width:100%; height: 200px;"></textarea>
+        </div>
+    </div>
+
   </div>
 </script>
 
@@ -751,6 +750,7 @@
           iconClass: "fa fa-file-text-o",
         });
       },
+
       oneditprepare: function () {
         var node = this;
 
@@ -809,10 +809,26 @@
           createResponseLine(response, false);
         }
 
-        // Parse requestBody and generate list
-        var requestBody = node.requestBody || {};
-        for (var name in requestBody.content) {
-          createRequestBodyLine(requestBody.content[name], false);
+        if (node.requestBody) {
+          $("#node-config-input-requestBody-description").val(
+            node.requestBody.description
+          );
+          $("#node-config-input-requestBody-required").prop(
+            "checked",
+            node.requestBody.required || false
+          );
+
+          var contentType = Object.keys(node.requestBody.content)[0];
+          if (contentType) {
+            $("#node-config-input-requestBody-contentType").val(contentType);
+
+            var schema = node.requestBody.content[contentType].schema;
+            if (schema) {
+              $("#node-config-input-requestBody-json").val(
+                JSON.stringify(schema, null, 2)
+              );
+            }
+          }
         }
       },
 
@@ -927,82 +943,36 @@
           content: {},
         };
 
-        var contentType = $("#node-config-input-requestBody-contentType").val();
-        if (contentType && contentType.trim() !== "") {
-          requestBody.content[contentType] = {
-            schema: {
-              type: "object",
-              properties: {},
-            },
-          };
-          $("#node-config-requestBody-properties li").each(function () {
-            var properties = {};
-            $(this)
-              .find(".node-swagger-prop-list")
-              .children(".node-swagger-property-name-row")
-              .each(function () {
-                var property = {};
-                var name = $(this).find(".node-swagger-type-name").val();
+        console.log("Initial request body:", requestBody);
 
-                var row = $(this).find(".node-swagger-type-top-row");
+    var contentType = $("#node-config-input-requestBody-contentType").val();
+    var jsonSchema = $("#node-config-input-requestBody-json").val();
 
-                var current = property;
-                var ctype = row.children(".node-swagger-type-select").val();
-
-                if (ctype) {
-                  if (ctype != "ref") {
-                    current.type = ctype;
-                    if (current.type == "array") {
-                      var collFormat = row
-                        .children(".node-swagger-type-collection-format")
-                        .val();
-                      if (collFormat) current.collectionFormat = collFormat;
-                      var nextRow = row.children(".node-swagger-type-row");
-                      current.items = getArrayItems(nextRow);
-                    } else {
-                      var format = row
-                        .children(".node-swagger-type-format")
-                        .val();
-                      if (format) current.format = format;
-                    }
-                  } else {
-                    current["$ref"] = row
-                      .children(".node-swagger-type-format")
-                      .val();
-                  }
-                }
-
-                properties[name] = property;
-              });
-            requestBody.content[contentType].schema.properties = properties;
-          });
+    if (contentType && contentType.trim() !== "" && jsonSchema && jsonSchema.trim() !== "") {
+        try {
+            var schema = JSON.parse(jsonSchema);
+            requestBody.content[contentType] = {
+                schema: schema,
+            };
+        } catch (e) {
+            console.error("Invalid JSON schema:", e);
+            // Handle the error, maybe notify the user
         }
+    }
 
-        // Debugging: Request body content
-        console.log("Request body content:", requestBody.content);
+    var requestBodyRequired = $("#node-config-input-requestBody-required").is(":checked");
+    if (requestBodyRequired) {
+        requestBody.required = true;
+    }
 
-        var requestBodyRequired = $(
-          "#node-config-input-requestBody-required"
-        ).is(":checked");
-        if (requestBodyRequired) {
-          requestBody.required = true;
-        }
+    if (Object.keys(requestBody.content).length > 0) {
+        node.requestBody = requestBody;
+    } else {
+        delete node.requestBody;
+    }
 
-        console.log("Request body required:", requestBodyRequired);
-
-        if (
-          requestBody.content &&
-          Object.keys(requestBody.content).length > 0 &&
-          Object.keys(requestBody.content[contentType].schema.properties)
-            .length > 0
-        ) {
-          node.requestBody = requestBody;
-        } else {
-          delete node.requestBody;
-        }
-
-        // Debugging: Final requestBody object
-        console.log("Final requestBody object:", node.requestBody);
+    // Debugging: Final requestBody object
+    console.log("Final requestBody object:", node.requestBody);
 
         // Collect responses
         var responses = {};
