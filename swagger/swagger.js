@@ -44,6 +44,8 @@ const DEFAULT_TEMPLATE = {
 module.exports = function (RED) {
   "use strict";
 
+  console.log("Dev version of this flow");
+
   const path = require("path");
 
   const convToSwaggerPath = (x) => `/{${x.substring(2)}}`;
@@ -55,104 +57,96 @@ module.exports = function (RED) {
   const regexColons = /\/:\w*/g;
 
   RED.httpNode.get("/http-api/swagger.json", (req, res) => {
-    const { httpNodeRoot, openapi: { template = {}, parameters: additionalParams = [] } = {} } = RED.settings;
+  const { httpNodeRoot, openapi: { template = {}, parameters: additionalParams = [] } = {} } = RED.settings;
 
-    //console.log("httpNodeRoot:", httpNodeRoot);
-    //console.log("OpenAPI Template:", template);
-    //console.log("Additional Parameters:", additionalParams);
+  const resp = { ...DEFAULT_TEMPLATE, ...template };
+  const { basePath = httpNodeRoot } = resp;
 
-    //const settingsPath = RED.settings.get('settingsFile');
-    //console.log("Settings file path:", settingsPath);
+  resp.paths = {};
 
+  RED.nodes.eachNode((node) => {
+    const { name, type, method, swaggerDoc, url } = node;
 
-    const resp = { ...DEFAULT_TEMPLATE, ...template };
-    const { basePath = httpNodeRoot } = resp;
+    if (type === "http in") {
+      const swaggerDocNode = RED.nodes.getNode(swaggerDoc);
 
-    resp.paths = {};
+      if (swaggerDocNode) {
+        const endPoint = ensureLeadingSlash(
+          url.replace(regexColons, convToSwaggerPath)
+        );
+        if (!resp.paths[endPoint]) resp.paths[endPoint] = {};
 
-    RED.nodes.eachNode((node) => {
-      const { name, type, method, swaggerDoc, url } = node;
+        const {
+          summary = swaggerDocNode.summary || name || method + " " + endPoint,
+          description = swaggerDocNode.description || "",
+          tags = swaggerDocNode.tags || "",
+          deprecated = swaggerDocNode.deprecated || false,
+          parameters = swaggerDocNode.parameters || [],
+          requestBody = swaggerDocNode.requestBody || {}
+        } = swaggerDocNode;
 
-      if (type === "http in") {
-        const swaggerDocNode = RED.nodes.getNode(swaggerDoc);
+        const aryTags = csvStrToArray(tags);
 
-        if (swaggerDocNode) {
-          const endPoint = ensureLeadingSlash(
-            url.replace(regexColons, convToSwaggerPath)
-          );
-          if (!resp.paths[endPoint]) resp.paths[endPoint] = {};
+        const operation = {
+          summary,
+          description,
+          tags: aryTags,
+          deprecated,
+          parameters: [...parameters, ...additionalParams].map((param) => {
+            return {
+              name: param.name,
+              in: param.in,
+              required: param.required,
+              schema: {
+                type: param.type,
+              },
+              description: param.description,
+            };
+          }),
+          requestBody: requestBody,
+          responses: {}
+        };
 
-          const {
-            summary = swaggerDocNode.summary || name || method + " " + endPoint,
-            description = swaggerDocNode.description || "",
-            tags = swaggerDocNode.tags || "",
-            deprecated = swaggerDocNode.deprecated || false,
-            parameters = swaggerDocNode.parameters || [],
-          } = swaggerDocNode;
+        if (
+          swaggerDocNode &&
+          typeof swaggerDocNode.responses === "object" &&
+          swaggerDocNode.responses !== null
+        ) {
+          Object.keys(swaggerDocNode.responses).forEach((status) => {
+            const responseDetails = swaggerDocNode.responses[status];
+            operation.responses[status] = {
+              description: responseDetails.description || "No description",
+              content: {},
+            };
 
-          const aryTags = csvStrToArray(tags);
-
-          const operation = {
-            summary,
-            description,
-            tags: aryTags,
-            deprecated,
-            parameters: [...parameters, ...additionalParams].map((param) => {
-              return {
-                name: param.name,
-                in: param.in,
-                required: param.required,
-                schema: {
-                  type: param.type,
-                },
-                description: param.description,
+            if (responseDetails.schema) {
+              operation.responses[status].content["application/json"] = {
+                schema: responseDetails.schema,
               };
-            }),
-            responses: {},
-          };
-
-          // Check if responses is an object and not null or undefined
-          if (
-            swaggerDocNode &&
-            typeof swaggerDocNode.responses === "object" &&
-            swaggerDocNode.responses !== null
-          ) {
-            Object.keys(swaggerDocNode.responses).forEach((status) => {
-              const responseDetails = swaggerDocNode.responses[status];
-              operation.responses[status] = {
-                description: responseDetails.description || "No description",
-                content: {},
-              };
-
-              // Conditionally add schema if it's set
-              if (responseDetails.schema) {
-                operation.responses[status].content["application/json"] = {
-                  schema: responseDetails.schema,
-                };
-              }
-            });
-          } else {
-            console.error(
-              "swaggerDocNode.responses is not an object or is null:",
-              swaggerDocNode.responses
-            );
-          }
-
-          // Add the operation to the path in the spec
-          resp.paths[endPoint][method.toLowerCase()] = operation;
+            }
+          });
         } else {
           console.error(
-            "No Swagger Documentation node found for HTTP In node:",
-            node.id
+            "swaggerDocNode.responses is not an object or is null:",
+            swaggerDocNode.responses
           );
         }
-      }
-    });
 
-    // Final cleanup to remove empty sections
-    cleanupOpenAPISpec(resp);
-    res.json(resp);
+        resp.paths[endPoint][method.toLowerCase()] = operation;
+      } else {
+        console.error(
+          "No Swagger Documentation node found for HTTP In node:",
+          node.id
+        );
+      }
+    }
   });
+
+  // Final cleanup to remove empty sections
+  cleanupOpenAPISpec(resp);
+  res.json(resp);
+});
+
 
   function cleanupOpenAPISpec(spec) {
     // Clean up components
@@ -187,9 +181,11 @@ module.exports = function (RED) {
     this.tags = n.tags;
     this.parameters = n.parameters;
     this.responses = n.responses;
+    this.requestBody = n.requestBody;  // Ensure requestBody is captured
     this.deprecated = n.deprecated;
   }
   RED.nodes.registerType("swagger-doc", SwaggerDoc);
+  
 
   // Serve the main Swagger UI HTML file
   RED.httpAdmin.get("/swagger-ui/swagger-ui.html", (req, res) => {
