@@ -1,8 +1,8 @@
 # Node-RED OpenAPI3 Documentation Generator
 
-This package provides a set of tools for generating OpenAPI3 documentation based on the HTTP nodes deployed in a flow.
+This package provides a set of tools for generating OpenAPI3 documentation based on the HTTP nodes deployed in a flow. 
 
-It is a fork of the https://github.com/node-red/node-red-node-swagger repo with some significant updates of dependencies and restructuring due to the Openapi3-update. 
+It is a fork of the https://github.com/node-red/node-red-node-swagger repo with some significant updates of dependencies and restructuring due to the OpenAPI3-update. The package is not a complete implementation of all features of OpenAPI3 but some basics to generate correct .json files and Swagger-UI details.
 
 ## Usage
 
@@ -92,8 +92,6 @@ This tab allows you to provide the basic information about the attached paths.
 * Summary - A short summary of what the operation does. For maximum readability in the Swagger-UI, this field SHOULD be less than 120 characters.
 * Description - A verbose explanation of the operation behavior. [GFM syntax](https://help.github.com/articles/github-flavored-markdown) can be used for rich text representation.
 * Tags - A list of tags for API documentation control. Tags can be used for logical grouping of operations by resources or any other qualifier. These should be provided as a comma-separated list.
-* Consumes - A list of MIME types the operation can consume. These should be provided as a comma-separated list.
-* Produces - A list of MIME types the operation can produce. These should be provided as a comma-separated list.
 * Deprecated - Declares this operation to be deprecated. Usage of the declared operation should be refrained.
 
 #### Parameters
@@ -106,8 +104,6 @@ This tab allows you to configure the parameters that can be used with the partic
 * In - The location of the parameter. There are four supported locations of the parameter:
   * _Query_ - Parameters that are appended to the URL. For example, in `/items?id=###`, the query parameter is `id`.
   * _Header_ - Custom headers that are expected as part of the request.
-  * _Form_ - Used to describe the payload of an HTTP request when either `application/x-www-form-urlencoded` or `multipart/form-data` are used as the content type of the request. This is the only parameter type that can be used to send files, thus supporting the `file` type. Since form parameters are sent in the payload, they cannot be declared together with a body parameter for the same operation. Form parameters have a different format based on the content-type used (for further details, consult <http://www.w3.org/TR/html401/interact/forms.html#h-17.13.4>).
-  * _Body_ - The payload that's appended to the HTTP request. Since there can only be one payload, there can only be *one* body parameter. The name of the body parameter has no effect on the parameter itself and is used for documentation purposes only. Since Form parameters are also in the payload, body and form parameters cannot exist together for the same operation.
 * Description - A brief description of the parameter. This could contain examples of use. [GFM syntax](https://help.github.com/articles/github-flavored-markdown) can be used for rich text representation.
 * Required - Determines whether this parameter is mandatory.
 * Type - The type of the parameter. Since the parameter is not located at the request body, it is limited to simple types (that is, not an object).
@@ -129,6 +125,38 @@ This tab allows you to define the applicable responses that a user may receive b
 * Format - The extending format for the previously mentioned type.
 
 If no responses are provided, a default response with the reply "success" will be used.
+
+#### Request Body
+
+This tab allows you to define the request body for the operation.
+
+* Description - A brief description of the request body.
+* Required - A checkbox to indicate if the request body is required.
+* Content Type - The media type of the request body (e.g., application/json).
+* JSON Schema - A text area where you can define the JSON schema for the request body.
+Example JSON Schema:
+```json
+{
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "example": "John Doe"
+    },
+    "age": {
+      "type": "integer",
+      "example": 30
+    },
+    "email": {
+      "type": "string",
+      "format": "email",
+      "example": "john.doe@example.com"
+    }
+  },
+  "required": ["name", "email"]
+}
+
+```
 
 ## Swagger-UI
 
