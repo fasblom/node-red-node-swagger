@@ -44,6 +44,8 @@ const DEFAULT_TEMPLATE = {
 module.exports = function (RED) {
   "use strict";
 
+  console.log("Dev version of this flow");
+
   const path = require("path");
 
   const convToSwaggerPath = (x) => `/{${x.substring(2)}}`;
@@ -55,15 +57,10 @@ module.exports = function (RED) {
   const regexColons = /\/:\w*/g;
 
   RED.httpNode.get("/http-api/swagger.json", (req, res) => {
-    const { httpNodeRoot, openapi: { template = {}, parameters: additionalParams = [] } = {} } = RED.settings;
-
-    //console.log("httpNodeRoot:", httpNodeRoot);
-    //console.log("OpenAPI Template:", template);
-    //console.log("Additional Parameters:", additionalParams);
-
-    //const settingsPath = RED.settings.get('settingsFile');
-    //console.log("Settings file path:", settingsPath);
-
+    const {
+      httpNodeRoot,
+      openapi: { template = {}, parameters: additionalParams = [] } = {},
+    } = RED.settings;
 
     const resp = { ...DEFAULT_TEMPLATE, ...template };
     const { basePath = httpNodeRoot } = resp;
@@ -88,6 +85,7 @@ module.exports = function (RED) {
             tags = swaggerDocNode.tags || "",
             deprecated = swaggerDocNode.deprecated || false,
             parameters = swaggerDocNode.parameters || [],
+            requestBody = swaggerDocNode.requestBody || {},
           } = swaggerDocNode;
 
           const aryTags = csvStrToArray(tags);
@@ -108,10 +106,10 @@ module.exports = function (RED) {
                 description: param.description,
               };
             }),
+            requestBody: requestBody,
             responses: {},
           };
 
-          // Check if responses is an object and not null or undefined
           if (
             swaggerDocNode &&
             typeof swaggerDocNode.responses === "object" &&
@@ -124,7 +122,6 @@ module.exports = function (RED) {
                 content: {},
               };
 
-              // Conditionally add schema if it's set
               if (responseDetails.schema) {
                 operation.responses[status].content["application/json"] = {
                   schema: responseDetails.schema,
@@ -138,7 +135,6 @@ module.exports = function (RED) {
             );
           }
 
-          // Add the operation to the path in the spec
           resp.paths[endPoint][method.toLowerCase()] = operation;
         } else {
           console.error(
@@ -187,6 +183,7 @@ module.exports = function (RED) {
     this.tags = n.tags;
     this.parameters = n.parameters;
     this.responses = n.responses;
+    this.requestBody = n.requestBody; // Ensure requestBody is captured
     this.deprecated = n.deprecated;
   }
   RED.nodes.registerType("swagger-doc", SwaggerDoc);

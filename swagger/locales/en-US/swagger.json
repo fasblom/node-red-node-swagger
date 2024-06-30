@@ -43,7 +43,8 @@
         "tabs-label": {
             "info": "Info",
             "parameters": "Parameters",
-            "responses": "Responses"
+            "responses": "Responses",
+            "requestBody": "Request Body"
         },
         "text": {
             "type": "Type",
