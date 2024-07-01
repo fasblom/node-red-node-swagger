@@ -44,7 +44,7 @@ const DEFAULT_TEMPLATE = {
 module.exports = function (RED) {
   "use strict";
 
-  console.log("Dev version of this flow");
+  //console.log("Dev version of this flow");
 
   const path = require("path");
 
