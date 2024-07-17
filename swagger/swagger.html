@@ -88,7 +88,6 @@
 </script>
 
 <script type="text/javascript">
-  var swaggerDocUrl;
   (function () {
     function createPropertyRow(opts) {
       var row = $("<div/>", {
@@ -727,15 +726,6 @@
           style:
             "position: relative; padding: 0px 4px; height: 100%; overflow: hidden",
         });
-
-        swaggerDocUrl =
-          window.location.protocol +
-          "//" +
-          window.location.hostname +
-          ":" +
-          window.location.port +
-          RED.settings.httpNodeRoot +
-          "http-api/swagger.json";
         var swaggerFrame = $("<iframe/>", {
           id: "swagger-ui-frame",
           style:

@@ -12,8 +12,15 @@
   <script src="swagger-ui-standalone-preset.js"></script> 
   <script>
   window.onload = function() {
+    let swaggerDocUrl = "http-api/swagger.json";
+    if (window.parent) {
+      // get full url with node-RED settings (like original node-red-node-swagger)
+      const parentLocation = window.parent.location
+      swaggerDocUrl = parentLocation.protocol + "//" + parentLocation.hostname + ":" + parentLocation.port + window.parent.RED.settings.httpNodeRoot + "http-api/swagger.json";
+    }
+
     const ui = SwaggerUIBundle({
-      url: "/http-api/swagger.json", 
+      url: swaggerDocUrl, 
       dom_id: '#swagger-ui',
       deepLinking: true,
       presets: [
