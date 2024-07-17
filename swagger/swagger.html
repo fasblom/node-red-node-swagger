@@ -22,13 +22,13 @@
   </div>
 
   <div class="form-row">
-      <ul style="background: #fff; min-width: 600px; margin-bottom: 20px;" id="node-config-swagger-tabs"></ul>
+      <ul style="min-width: 600px; margin-bottom: 20px;" id="node-config-swagger-tabs"></ul>
   </div>
 
   <div id="node-config-swagger-tabs-content" style="min-height: 350px">
       <div id="swagger-tab-info">
           <div class="form-row">
-              <label id="node-config-input-summary-label" for="node-config-input-summary" class="popover-right" data-i18n="[data-content]swagger.data-content.summary"><span data-i18n="swagger.label.summary"></span></label>
+              <label id="node-config-input-summary-label" for="node-config-input-summary" class="popover-right node-swagger-full-label-width" data-i18n="[data-content]swagger.data-content.summary"><span data-i18n="swagger.label.summary"></span></label>
               <input type="text" id="node-config-input-summary">
           </div>
           <div class="form-row">
@@ -45,7 +45,7 @@
       </div>
       <div id="swagger-tab-parameters">
           <div class="form-row" style="box-sizing: border-box; border-radius: 5px; height: 310px; padding: 5px; border: 1px solid #ccc; overflow-y:scroll;">
-              <ul id="node-config-parameter-list" style="padding: 0; margin:0;"></ul>
+              <ul id="node-config-parameter-list" class="red-ui-editableList-list" style="padding: 0; margin:0;"></ul>
           </div>
           <div class="form-row">
               <a href="#" class="red-ui-button red-ui-button-small" id="node-config-input-add-parameter"><i class="fa fa-plus"></i> <span data-i18n="swagger.label.parameter"></span></a>
@@ -54,7 +54,7 @@
       </div>
       <div id="swagger-tab-responses">
           <div class="form-row" style="box-sizing: border-box; border-radius: 5px; height: 310px; padding: 5px; border: 1px solid #ccc; overflow-y:scroll;">
-              <ul id="node-config-response-list" style="padding: 0; margin:0;"></ul>
+              <ul id="node-config-response-list" class="red-ui-editableList-list" style="padding: 0; margin:0;"></ul>
           </div>
           <div class="form-row">
               <a href="#" class="red-ui-button red-ui-button-small" id="node-config-input-add-response"><i class="fa fa-plus"></i> <span data-i18n="swagger.label.response"></span></a>
@@ -63,7 +63,7 @@
       </div>
       <div id="swagger-tab-requestBody">
         <div class="form-row">
-            <label id="node-config-input-requestBody-label" for="node-config-input-requestBody" class="popover-right"><span>Request Body Description</span></label>
+            <label id="node-config-input-requestBody-label" for="node-config-input-requestBody" class="popover-right node-swagger-full-label-width"><span>Request Body Description</span></label>
             <input type="text" id="node-config-input-requestBody-description" style="width:100%;">
         </div>
         <div class="form-row">
@@ -92,11 +92,9 @@
     function createPropertyRow(opts) {
       var row = $("<div/>", {
         class: "node-swagger-property-name-row",
-        style: "margin-top: 3px; margin-left: 10px;",
       });
       $("<label/>", {
         class: "node-swagger-prop-name-label",
-        style: "width: auto; margin-right: 10px;",
       })
         .text("Name")
         .appendTo(row);
@@ -109,8 +107,7 @@
         .appendTo(row);
       var remove = $("<a/>", {
         href: "#",
-        class: "red-ui-button red-ui-button-small",
-        style: "float: right; margin-right: 5px; margin-top: 3px;",
+        class: "red-ui-button red-ui-button-small node-swagger-remove-button",
       }).appendTo(row);
       $("<i/>", { class: "fa fa-remove" }).appendTo(remove);
       remove.click(function (e) {
@@ -120,8 +117,7 @@
         e.preventDefault();
       });
       var propList = $("<div/>", {
-        class: "node-swagger-property-row",
-        style: "margin-top: 3px; margin-left: 10px;",
+        class: "node-swagger-property-row"
       });
       propList.appendTo(row);
       opts.propertyRow = true;
@@ -206,17 +202,16 @@
     }
 
     function createParameterLine(opts, expand) {
-      var li = $("<li/>", {
-        style: "background: #fff; margin:4px 0; border: 1px solid #ccc;",
+      var li = $("<li />", {
+        class: "red-ui-editableList-item-removable node-swagger-item"
       }).appendTo("#node-config-parameter-list");
 
       var row1 = $("<div/>", {
-        style: "background:#f3f3f3; padding: 5px;",
+        class: "red-ui-editableList-item-content node-swagger-item-content"
       }).appendTo(li);
       var remove = $("<a/>", {
         href: "#",
-        class: "red-ui-button red-ui-button-small",
-        style: "float: right; margin-right: 5px; margin-top: 3px;",
+        class: "red-ui-button red-ui-button-small node-swagger-remove-button"
       }).appendTo(row1);
       $("<i/>", { class: "fa fa-remove" }).appendTo(remove);
       remove.click(function (e) {
@@ -334,12 +329,11 @@
       var required = $("<input/>", {
         type: "checkbox",
         class: "node-swagger-required",
-        style:
-          "width: auto; float: right; margin-left: 10px; vertical-align: middle",
+        style: "margin-left: 10px; margin-top: 10px;",
       }).appendTo(row2);
       $("<label/>", {
-        style:
-          "width: auto; float: right; margin-left:20px; vertical-align: middle",
+        class: "node-swagger-required-label",
+        style: "margin-top: 6px",
       })
         .text("Required")
         .appendTo(row2);
@@ -429,16 +423,15 @@
 
     function createResponseLine(opts, expand) {
       var li = $("<li/>", {
-        style: "background: #fff; margin:4px 0; border: 1px solid #ccc;",
+        class: "red-ui-editableList-item-removable node-swagger-item"
       }).appendTo("#node-config-response-list");
 
       var row1 = $("<div/>", {
-        style: "background:#f3f3f3; padding: 5px;",
+        class: "red-ui-editableList-item-content node-swagger-item-content"
       }).appendTo(li);
       var remove = $("<a/>", {
         href: "#",
-        class: "red-ui-button red-ui-button-small",
-        style: "float: right; margin-right: 5px; margin-top: 3px;",
+        class: "red-ui-button red-ui-button-small node-swagger-remove-button"
       }).appendTo(row1);
       $("<i/>", { class: "fa fa-remove" }).appendTo(remove);
       remove.click(function (e) {
@@ -574,16 +567,15 @@
 
     function createRequestBodyLine(opts, expand) {
       var li = $("<li/>", {
-        style: "background: #fff; margin:4px 0; border: 1px solid #ccc;",
+        class: "red-ui-editableList-item-removable node-swagger-item"
       }).appendTo("#node-config-requestBody-properties");
 
       var row1 = $("<div/>", {
-        style: "background:#f3f3f3; padding: 5px;",
+        class: "red-ui-editableList-item-content node-swagger-item-content"
       }).appendTo(li);
       var remove = $("<a/>", {
         href: "#",
-        class: "red-ui-button red-ui-button-small",
-        style: "float: right; margin-right: 5px; margin-top: 3px;",
+        class: "red-ui-button red-ui-button-small node-swagger-remove-button"
       }).appendTo(row1);
       var removeIcon = $("<i/>", {
         class: "fa fa-remove",
@@ -1034,3 +1026,34 @@
     });
   })();
 </script>
+
+<style>
+  .node-swagger-item {
+    margin: 4px 0;
+    border: 1px solid var(--red-ui-secondary-border-color);
+  }
+  .node-swagger-item-content {
+    padding: 5px;
+  }
+  .node-swagger-property-name-row, .node-swagger-property-row {
+    margin-top: 3px; 
+    margin-left: 10px;
+  }
+  a.red-ui-button.node-swagger-remove-button {
+    float: right;
+    margin-right: 5px;
+    margin-top: 7px;
+  }
+  .node-swagger-name-row input.node-swagger-required, .node-swagger-name-row label.node-swagger-required-label {
+    width: auto;
+    float: right; 
+    vertical-align: middle;
+  }
+  .node-swagger-full-label-width {
+    width: auto;
+  }
+  .node-swagger-prop-name-label {
+    width: 100px;
+    margin-right: 10px;
+  }
+</style>
