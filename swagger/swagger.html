@@ -28,7 +28,7 @@
   <div id="node-config-swagger-tabs-content" style="min-height: 350px">
       <div id="swagger-tab-info">
           <div class="form-row">
-              <label id="node-config-input-summary-label" for="node-config-input-summary" class="popover-right node-swagger-full-label-width" data-i18n="[data-content]swagger.data-content.summary"><span data-i18n="swagger.label.summary"></span></label>
+              <label id="node-config-input-summary-label" for="node-config-input-summary" class="popover-right" data-i18n="[data-content]swagger.data-content.summary"><span data-i18n="swagger.label.summary"></span></label>
               <input type="text" id="node-config-input-summary">
           </div>
           <div class="form-row">
@@ -62,6 +62,9 @@
           </div>
       </div>
       <div id="swagger-tab-requestBody">
+        <div id="swagger-method-requestBody-warning" class="hide">
+          <i class="fa fa-warning" style="margin-right: 6px"></i> Methods like "GET", "HEAD" or "DELETE" should not have a request body.
+        </div>
         <div class="form-row">
             <label id="node-config-input-requestBody-label" for="node-config-input-requestBody" class="popover-right node-swagger-full-label-width"><span>Request Body Description</span></label>
             <input type="text" id="node-config-input-requestBody-description" style="width:100%;">
@@ -695,6 +698,11 @@
       setTimeout(function () {
         tabs.resize();
       }, 10);
+
+      // show / hide request body warning for some methods
+      if (["GET", "HEAD", "DELETE"].includes($("#node-config-input-method").text())) {
+        $("#swagger-method-requestBody-warning")[0]?.classList?.remove("hide")
+      }
     }
 
     RED.nodes.registerType("swagger-doc", {
@@ -1056,5 +1064,9 @@
   .node-swagger-prop-name-label {
     width: 100px;
     margin-right: 10px;
+  }
+  #swagger-method-requestBody-warning {
+    margin: 20px 0;
+    color: var(--red-ui-text-color-warning);
   }
 </style>

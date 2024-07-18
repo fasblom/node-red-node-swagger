@@ -79,13 +79,16 @@ module.exports = function (RED) {
           );
           if (!resp.paths[endPoint]) resp.paths[endPoint] = {};
 
+          // request body is permitted in methods GET, HEAD, DELETE but should be avoided https://swagger.io/specification/#operation-object
+          // editors will show invalid if those methods have an request body -> if not explicit set, do not set it
+          const avoidRequestBody = ['get', 'head', 'delete']
           const {
             summary = swaggerDocNode.summary || name || method + " " + endPoint,
             description = swaggerDocNode.description || "",
             tags = swaggerDocNode.tags || "",
             deprecated = swaggerDocNode.deprecated || false,
             parameters = swaggerDocNode.parameters || [],
-            requestBody = swaggerDocNode.requestBody || {},
+            requestBody = swaggerDocNode.requestBody || (avoidRequestBody.includes(method.toLowerCase()) ? undefined : {}),
           } = swaggerDocNode;
 
           const aryTags = csvStrToArray(tags);
