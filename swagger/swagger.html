@@ -75,7 +75,7 @@
             <input type="text" id="node-config-input-requestBody-contentType" value="application/json" style="width: 100%;">
         </div>
         <div class="form-row">
-            <label id="node-config-input-requestBody-json-label" for="node-config-input-requestBody-json" class="popover-right"><span>Request Body JSON Schema</span></label>
+            <label id="node-config-input-requestBody-json-label" for="node-config-input-requestBody-json" class="popover-right node-swagger-full-label-width"><span>Request Body JSON Schema</span></label>
             <textarea id="node-config-input-requestBody-json" style="width:100%; height: 200px;"></textarea>
         </div>
     </div>
@@ -1049,8 +1049,9 @@
     float: right; 
     vertical-align: middle;
   }
-  .node-swagger-full-label-width {
-    width: auto;
+  .form-row label.node-swagger-full-label-width {
+    width: fit-content;
+    text-wrap: nowrap;
   }
   .node-swagger-prop-name-label {
     width: 100px;
