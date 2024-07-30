@@ -18,9 +18,9 @@
       const parentLocation = window.parent.location
       swaggerDocUrl = parentLocation.protocol + "//" + parentLocation.hostname + ":" + parentLocation.port + window.parent.RED.settings.httpNodeRoot 
       if (!swaggerDocUrl.endsWith('/')) {
-        swaggerDocUrl =+ "/";
+        swaggerDocUrl += "/";
       }
-      swaggerDocUrl =+ "http-api/swagger.json";
+      swaggerDocUrl += "http-api/swagger.json";
     }
 
     const ui = SwaggerUIBundle({
