@@ -17,7 +17,7 @@
       // get full url with node-RED settings (like original node-red-node-swagger)
       const parentLocation = window.parent.location
       swaggerDocUrl = parentLocation.protocol + "//" + parentLocation.hostname + ":" + parentLocation.port + window.parent.RED.settings.httpNodeRoot 
-      if (!swaggerDocUrl.endsWith('/') {
+      if (!swaggerDocUrl.endsWith('/')) {
         swaggerDocUrl =+ "/";
       }
       swaggerDocUrl =+ "http-api/swagger.json";
